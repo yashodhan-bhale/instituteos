@@ -6,7 +6,9 @@ node_modules/
 dist/
 .next/
 .expo/
+out/
 *.tsbuildinfo
+.eslintcache
 
 # Environment
 .env
@@ -15,6 +17,7 @@ dist/
 .env.dev
 .env.staging
 .env.prod
+*.local
 
 # Prisma
 packages/database/src/generated/
@@ -43,3 +46,6 @@ pnpm-debug.log*
 
 # Coverage
 coverage/
+
+# Temp
+temp/
