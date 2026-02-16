@@ -12,6 +12,9 @@ dist/
 .env
 .env.local
 .env.*.local
+.env.dev
+.env.staging
+.env.prod
 
 # Prisma
 packages/database/src/generated/
