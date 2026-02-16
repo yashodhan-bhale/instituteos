@@ -4,13 +4,18 @@ import { AuthService } from "./auth.service";
 
 @Controller("auth")
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @Post("login")
   async login(
     @Body() body: { email: string; password: string; instituteId?: string },
   ) {
     return this.authService.login(body.email, body.password, body.instituteId);
+  }
+
+  @Post("platform-login")
+  async platformLogin(@Body() body: { email: string; password: string }) {
+    return this.authService.platformLogin(body.email, body.password);
   }
 
   @Post("register")

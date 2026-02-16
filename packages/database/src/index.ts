@@ -18,5 +18,5 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 export * from "@prisma/client";
-export { TaskStatus, TaskPriority, UserRole, InstituteTier } from "@prisma/client";
+export { TaskStatus, TaskPriority, UserRole, InstituteTier, PlatformRole } from "@prisma/client";
 export default prisma;

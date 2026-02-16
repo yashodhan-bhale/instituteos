@@ -20,8 +20,14 @@ enum InstituteTier {
   PREMIUM
 }
 
-enum UserRole {
+enum PlatformRole {
   SUPER_ADMIN
+  PLATFORM_STAFF
+  SUPPORT
+  SALES
+}
+
+enum UserRole {
   INSTITUTE_ADMIN
   PRINCIPAL
   OFFICE_STAFF
@@ -43,7 +49,43 @@ enum TaskPriority {
 }
 
 // ──────────────────────────────────────────────
-// Core Models
+// Platform Management (Super Admin Layer)
+// ──────────────────────────────────────────────
+
+model PlatformUser {
+  id              String       @id @default(uuid()) @db.Uuid
+  email           String       @unique
+  passwordHash    String       @map("password_hash")
+  firstName       String       @map("first_name")
+  lastName        String       @map("last_name")
+  role            PlatformRole @default(PLATFORM_STAFF)
+  isActive        Boolean      @default(true) @map("is_active")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  // Relations
+  assignments     PlatformAssignment[]
+
+  @@map("platform_users")
+}
+
+model PlatformAssignment {
+  id              String       @id @default(uuid()) @db.Uuid
+  platformUserId  String       @map("platform_user_id") @db.Uuid
+  instituteId     String       @map("institute_id") @db.Uuid
+  role            PlatformRole @default(SUPPORT)
+  createdAt       DateTime     @default(now()) @map("created_at")
+
+  // Relations
+  platformUser    PlatformUser @relation(fields: [platformUserId], references: [id], onDelete: Cascade)
+  institute       Institute    @relation(fields: [instituteId], references: [id], onDelete: Cascade)
+
+  @@unique([platformUserId, instituteId])
+  @@map("platform_assignments")
+}
+
+// ──────────────────────────────────────────────
+// Core Models (Tenant Layer)
 // ──────────────────────────────────────────────
 
 model Institute {
@@ -64,6 +106,7 @@ model Institute {
   featureUsageLogs FeatureUsageLog[]
   roiStats        RoiStats?
   students        Student[]
+  platformAssignments PlatformAssignment[]
 
   @@map("institutes")
 }

@@ -14,6 +14,7 @@
         "@instituteos/ui": "workspace:*",
         "@tanstack/react-query": "^5.62.0",
         "@tanstack/react-table": "^8.20.0",
+        "jose": "^6.1.3",
         "lucide-react": "^0.469.0",
         "next": "^14.2.0",
         "react": "^18.3.0",

@@ -6,8 +6,10 @@ import {
 } from "@nestjs/common";
 import { TenancyMiddleware } from "./tenancy.middleware";
 import { TenancyGuard } from "./tenancy.guard";
+import { PrismaModule } from "../../prisma/prisma.module";
 
 @Module({
+  imports: [PrismaModule],
   providers: [TenancyGuard],
   exports: [TenancyGuard],
 })

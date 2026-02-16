@@ -8,6 +8,7 @@ interface JwtPayload {
   email: string;
   instituteId: string;
   roles: string[];
+  target: "platform" | "institute";
 }
 
 @Injectable()
@@ -15,7 +16,7 @@ export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async login(email: string, password: string, instituteId?: string) {
     const whereClause: any = { email };
@@ -46,6 +47,7 @@ export class AuthService {
       email: user.email,
       instituteId: user.instituteId,
       roles: user.roles.map((r) => r.role.name),
+      target: "institute",
     };
 
     return {
@@ -57,6 +59,42 @@ export class AuthService {
         lastName: user.lastName,
         instituteId: user.instituteId,
         roles: user.roles.map((r) => r.role.name),
+        target: "institute",
+      },
+    };
+  }
+
+  async platformLogin(email: string, password: string) {
+    const user = await this.prisma.platformUser.findUnique({
+      where: { email },
+    });
+
+    if (!user || !user.isActive) {
+      throw new UnauthorizedException("Invalid credentials");
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException("Invalid credentials");
+    }
+
+    const payload: JwtPayload = {
+      sub: user.id,
+      email: user.email,
+      instituteId: "PLATFORM",
+      roles: [user.role],
+      target: "platform",
+    };
+
+    return {
+      accessToken: this.jwtService.sign(payload),
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+        target: "platform",
       },
     };
   }
@@ -102,14 +140,24 @@ export class AuthService {
   }
 
   async validateUser(payload: JwtPayload) {
+    if (payload.target === "platform") {
+      const user = await this.prisma.platformUser.findUnique({
+        where: { id: payload.sub },
+      });
+      if (!user || !user.isActive) {
+        throw new UnauthorizedException("Platform user not found or inactive");
+      }
+      return { ...user, target: "platform" };
+    }
+
     const user = await this.prisma.user.findUnique({
       where: { id: payload.sub },
     });
 
     if (!user || !user.isActive) {
-      throw new UnauthorizedException("User not found or inactive");
+      throw new UnauthorizedException("Institute user not found or inactive");
     }
 
-    return user;
+    return { ...user, target: "institute" };
   }
 }
