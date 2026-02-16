@@ -15,7 +15,7 @@ import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 @Controller("import")
 @UseGuards(JwtAuthGuard)
 export class ImportController {
-  constructor(private readonly importService: ImportService) { }
+  constructor(private readonly importService: ImportService) {}
 
   @Post("students")
   @UseInterceptors(FileInterceptor("file"))

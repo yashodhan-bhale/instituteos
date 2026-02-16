@@ -13,11 +13,13 @@ declare global {
 
 @Injectable()
 export class TenancyMiddleware implements NestMiddleware {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   async use(req: Request, _res: Response, next: NextFunction) {
     // 1. Check Header (Developer/Direct Override)
-    let instituteId: string | undefined = req.headers["x-institute-id"] as string;
+    let instituteId: string | undefined = req.headers[
+      "x-institute-id"
+    ] as string;
 
     // 2. Check Subdomain if no header
     if (!instituteId) {
@@ -31,7 +33,9 @@ export class TenancyMiddleware implements NestMiddleware {
     next();
   }
 
-  private async extractFromSubdomain(req: Request): Promise<string | undefined> {
+  private async extractFromSubdomain(
+    req: Request,
+  ): Promise<string | undefined> {
     const host = req.headers.host;
     if (!host) return undefined;
 

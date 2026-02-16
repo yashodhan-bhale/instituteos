@@ -16,7 +16,7 @@ export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
 
   async login(email: string, password: string, instituteId?: string) {
     const whereClause: any = { email };
