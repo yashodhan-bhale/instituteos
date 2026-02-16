@@ -6,6 +6,7 @@ import { PricingModule } from "./modules/pricing/pricing.module";
 import { TrialModule } from "./modules/trial/trial.module";
 import { TaskModule } from "./modules/task/task.module";
 import { SignalModule } from "./modules/signal/signal.module";
+import { ImportModule } from "./modules/import/import.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { AppController } from "./app.controller";
 
@@ -19,6 +20,7 @@ import { AppController } from "./app.controller";
         TrialModule,
         TaskModule,
         SignalModule,
+        ImportModule,
     ],
     controllers: [AppController],
 })
