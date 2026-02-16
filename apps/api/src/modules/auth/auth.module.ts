@@ -6,15 +6,15 @@ import { AuthController } from "./auth.controller";
 import { JwtStrategy } from "./jwt.strategy";
 
 @Module({
-    imports: [
-        PassportModule.register({ defaultStrategy: "jwt" }),
-        JwtModule.register({
-            secret: process.env.JWT_SECRET || "dev-secret-change-in-production",
-            signOptions: { expiresIn: "7d" },
-        }),
-    ],
-    controllers: [AuthController],
-    providers: [AuthService, JwtStrategy],
-    exports: [AuthService, JwtModule],
+  imports: [
+    PassportModule.register({ defaultStrategy: "jwt" }),
+    JwtModule.register({
+      secret: process.env.JWT_SECRET || "dev-secret-change-in-production",
+      signOptions: { expiresIn: "7d" },
+    }),
+  ],
+  controllers: [AuthController],
+  providers: [AuthService, JwtStrategy],
+  exports: [AuthService, JwtModule],
 })
-export class AuthModule { }
+export class AuthModule {}

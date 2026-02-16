@@ -63,6 +63,7 @@ model Institute {
   tasks           Task[]
   featureUsageLogs FeatureUsageLog[]
   roiStats        RoiStats?
+  students        Student[]
 
   @@map("institutes")
 }
@@ -203,4 +204,34 @@ model RoiStats {
   institute               Institute @relation(fields: [instituteId], references: [id], onDelete: Cascade)
 
   @@map("roi_stats")
+}
+
+// ──────────────────────────────────────────────
+// Student Management
+// ──────────────────────────────────────────────
+
+model Student {
+  id              String    @id @default(uuid()) @db.Uuid
+  instituteId     String    @map("institute_id") @db.Uuid
+  grNo            String?   @map("gr_no")
+  grSet           String?   @map("gr_set")
+  division        String?
+  studentIdTag    String?   @map("student_id_tag")
+  studentName     String    @map("student_name")
+  motherName      String?   @map("mother_name")
+  rte             String?   @default("No")
+  birthDate       DateTime? @map("birth_date")
+  gender          String?
+  religion        String?
+  category        String?
+  
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  institute       Institute @relation(fields: [instituteId], references: [id], onDelete: Cascade)
+
+  @@unique([instituteId, grNo])
+  @@index([instituteId])
+  @@map("students")
 }
