@@ -3,7 +3,7 @@ import { TrialInterceptor } from "./trial.interceptor";
 import { UsageTrackerInterceptor } from "./usage-tracker.interceptor";
 
 @Module({
-    providers: [TrialInterceptor, UsageTrackerInterceptor],
-    exports: [TrialInterceptor, UsageTrackerInterceptor],
+  providers: [TrialInterceptor, UsageTrackerInterceptor],
+  exports: [TrialInterceptor, UsageTrackerInterceptor],
 })
-export class TrialModule { }
+export class TrialModule {}

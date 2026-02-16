@@ -6,20 +6,20 @@ import { TenancyGuard } from "../tenancy/tenancy.guard";
 @Controller("pricing")
 @UseGuards(TenancyGuard)
 export class PricingController {
-    constructor(private readonly pricingService: PricingService) { }
+  constructor(private readonly pricingService: PricingService) {}
 
-    @Get("calculate")
-    async getInstitutePricing(@Req() req: Request) {
-        return this.pricingService.calculateForInstitute(req.instituteId!);
-    }
+  @Get("calculate")
+  async getInstitutePricing(@Req() req: Request) {
+    return this.pricingService.calculateForInstitute(req.instituteId!);
+  }
 
-    @Post("simulate")
-    async simulatePricing(
-        @Body() body: { activeModules: string[]; studentCount: number }
-    ) {
-        return this.pricingService.calculateAnnualFee(
-            body.activeModules,
-            body.studentCount
-        );
-    }
+  @Post("simulate")
+  async simulatePricing(
+    @Body() body: { activeModules: string[]; studentCount: number },
+  ) {
+    return this.pricingService.calculateAnnualFee(
+      body.activeModules,
+      body.studentCount,
+    );
+  }
 }

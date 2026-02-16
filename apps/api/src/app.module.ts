@@ -11,17 +11,17 @@ import { PrismaModule } from "./prisma/prisma.module";
 import { AppController } from "./app.controller";
 
 @Module({
-    imports: [
-        ScheduleModule.forRoot(),
-        PrismaModule,
-        TenancyModule,
-        AuthModule,
-        PricingModule,
-        TrialModule,
-        TaskModule,
-        SignalModule,
-        ImportModule,
-    ],
-    controllers: [AppController],
+  imports: [
+    ScheduleModule.forRoot(),
+    PrismaModule,
+    TenancyModule,
+    AuthModule,
+    PricingModule,
+    TrialModule,
+    TaskModule,
+    SignalModule,
+    ImportModule,
+  ],
+  controllers: [AppController],
 })
-export class AppModule { }
+export class AppModule {}

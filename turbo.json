@@ -4,9 +4,13 @@
         "**/.env.*local"
     ],
     "tasks": {
+        "generate": {
+            "cache": false
+        },
         "build": {
             "dependsOn": [
-                "^build"
+                "^build",
+                "generate"
             ],
             "outputs": [
                 "dist/**",
@@ -19,6 +23,11 @@
             "persistent": true
         },
         "lint": {
+            "dependsOn": [
+                "^build"
+            ]
+        },
+        "test": {
             "dependsOn": [
                 "^build"
             ]
