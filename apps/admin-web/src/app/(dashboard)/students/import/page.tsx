@@ -40,7 +40,7 @@ export default function StudentImportPage() {
             <div className="mb-8">
                 <h1 className="text-3xl font-bold text-gray-900">Bulk Student Import</h1>
                 <p className="text-gray-500 mt-2">
-                    Upload your Excel catalog to quickly populate your institute's records.
+                    Upload your Excel catalog to quickly populate your institute&apos;s records.
                 </p>
             </div>
 
