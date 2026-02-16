@@ -1,0 +1,206 @@
+// This is your Prisma schema file
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ──────────────────────────────────────────────
+// Enums
+// ──────────────────────────────────────────────
+
+enum InstituteTier {
+  TRIAL
+  BASIC
+  PREMIUM
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  INSTITUTE_ADMIN
+  PRINCIPAL
+  OFFICE_STAFF
+  TEACHER
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  DONE
+  OVERDUE
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+// ──────────────────────────────────────────────
+// Core Models
+// ──────────────────────────────────────────────
+
+model Institute {
+  id              String        @id @default(uuid()) @db.Uuid
+  name            String
+  domain          String?       @unique
+  tier            InstituteTier @default(TRIAL)
+  trialStartDate  DateTime      @default(now()) @map("trial_start_date")
+  config          Json          @default("{}")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  // Relations
+  users           User[]
+  roles           Role[]
+  subscription    Subscription?
+  tasks           Task[]
+  featureUsageLogs FeatureUsageLog[]
+  roiStats        RoiStats?
+
+  @@map("institutes")
+}
+
+model User {
+  id              String    @id @default(uuid()) @db.Uuid
+  instituteId     String    @map("institute_id") @db.Uuid
+  email           String
+  passwordHash    String    @map("password_hash")
+  firstName       String    @map("first_name")
+  lastName        String    @map("last_name")
+  isActive        Boolean   @default(true) @map("is_active")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  institute       Institute @relation(fields: [instituteId], references: [id], onDelete: Cascade)
+  roles           UserRole_Assignment[]
+  tasksAssigned   Task[]    @relation("TaskAssignedBy")
+  tasksReceived   Task[]    @relation("TaskAssignedTo")
+
+  @@unique([instituteId, email])
+  @@map("users")
+}
+
+model Role {
+  id              String    @id @default(uuid()) @db.Uuid
+  instituteId     String    @map("institute_id") @db.Uuid
+  name            UserRole
+  description     String?
+  permissions     Json      @default("[]")
+  createdAt       DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  institute       Institute @relation(fields: [instituteId], references: [id], onDelete: Cascade)
+  users           UserRole_Assignment[]
+
+  @@unique([instituteId, name])
+  @@map("roles")
+}
+
+model UserRole_Assignment {
+  id              String    @id @default(uuid()) @db.Uuid
+  userId          String    @map("user_id") @db.Uuid
+  roleId          String    @map("role_id") @db.Uuid
+  assignedAt      DateTime  @default(now()) @map("assigned_at")
+
+  // Relations
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role            Role      @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+  @@map("user_role_assignments")
+}
+
+// ──────────────────────────────────────────────
+// Subscription & Billing
+// ──────────────────────────────────────────────
+
+model Subscription {
+  id              String    @id @default(uuid()) @db.Uuid
+  instituteId     String    @unique @map("institute_id") @db.Uuid
+  activeModules   String[]  @default([]) @map("active_modules")
+  studentCount    Int       @default(0) @map("student_count")
+  annualFee       Float     @default(0) @map("annual_fee")
+  isPaid          Boolean   @default(false) @map("is_paid")
+  billingStart    DateTime? @map("billing_start")
+  billingEnd      DateTime? @map("billing_end")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  institute       Institute @relation(fields: [instituteId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+// ──────────────────────────────────────────────
+// Task System (Central Nervous System)
+// ──────────────────────────────────────────────
+
+model Task {
+  id              String       @id @default(uuid()) @db.Uuid
+  instituteId     String       @map("institute_id") @db.Uuid
+  title           String
+  description     String?
+  path            String       // ltree path for hierarchical task trees
+  assignedById    String       @map("assigned_by_id") @db.Uuid
+  assignedToId    String       @map("assigned_to_id") @db.Uuid
+  deadline        DateTime?
+  status          TaskStatus   @default(PENDING)
+  priority        TaskPriority @default(MEDIUM)
+  completedAt     DateTime?    @map("completed_at")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  // Relations
+  institute       Institute    @relation(fields: [instituteId], references: [id], onDelete: Cascade)
+  assignedBy      User         @relation("TaskAssignedBy", fields: [assignedById], references: [id])
+  assignedTo      User         @relation("TaskAssignedTo", fields: [assignedToId], references: [id])
+
+  @@index([instituteId])
+  @@index([assignedToId])
+  @@index([status])
+  @@index([deadline])
+  @@map("tasks")
+}
+
+// ──────────────────────────────────────────────
+// Telemetry & ROI
+// ──────────────────────────────────────────────
+
+model FeatureUsageLog {
+  id              String    @id @default(uuid()) @db.Uuid
+  instituteId     String    @map("institute_id") @db.Uuid
+  moduleKey       String    @map("module_key")
+  featureKey      String    @map("feature_key")
+  userId          String?   @map("user_id") @db.Uuid
+  timestamp       DateTime  @default(now())
+
+  // Relations
+  institute       Institute @relation(fields: [instituteId], references: [id], onDelete: Cascade)
+
+  @@index([instituteId, moduleKey])
+  @@index([timestamp])
+  @@map("feature_usage_logs")
+}
+
+model RoiStats {
+  id                      String    @id @default(uuid()) @db.Uuid
+  instituteId             String    @unique @map("institute_id") @db.Uuid
+  totalTimeSavedMinutes   Int       @default(0) @map("total_time_saved_minutes")
+  moneySaved              Float     @default(0) @map("money_saved")
+  lastCalculatedAt        DateTime  @default(now()) @map("last_calculated_at")
+  updatedAt               DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  institute               Institute @relation(fields: [instituteId], references: [id], onDelete: Cascade)
+
+  @@map("roi_stats")
+}

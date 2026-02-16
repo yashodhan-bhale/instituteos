@@ -1,0 +1,35 @@
+name: Deploy Development
+
+on:
+    push:
+        branches: [dev]
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        if: github.event_name == 'push'
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Install Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+
+            - name: Install pnpm
+              uses: pnpm/action-setup@v3
+              with:
+                  version: 9
+
+            - name: Install dependencies
+              run: pnpm install
+
+            - name: Build
+              run: pnpm turbo build
+
+            - name: Deploy to Dev Server
+              run: |
+                  echo "Deploying to development environment..."
+                  # Example: rsync, docker push, or cloud provider CLI
+                  # npx prisma migrate deploy
