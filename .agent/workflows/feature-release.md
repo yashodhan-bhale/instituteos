@@ -6,11 +6,16 @@ This workflow automates the "Professional Git Flow". When you run this, I will p
 
 // turbo-all
 
+### Phase 0: Test Audit (Assurance)
+1. **Audit**: I will use the `assuring-quality` skill to scan your changes.
+2. **Flag & Show**: If I detect new logic without corresponding tests, I will alert you. Whenever tests are added, I will **explicitly show you the new test code alongside the existing tests** for that module so you can verify the coverage.
+*This step ensures total transparency and that we never merge logic that isn't verified.*
+
 ### Phase 1: Local Verification (The Safety Catch)
-1. **Linting**: I will run `pnpm turbo lint` to ensure code style consistency.
-2. **Generating**: I will run `pnpm turbo generate` to sync Prisma clients.
-3. **Building**: I will run `pnpm turbo build` to verify the monorepo compiles correctly.
-4. **Testing**: I will run `pnpm turbo test` to ensure no regressions were introduced.
+3. **Linting**: I will run `pnpm turbo lint` to ensure code style consistency.
+4. **Generating**: I will run `pnpm turbo generate` to sync Prisma clients.
+5. **Building**: I will run `pnpm turbo build` to verify the monorepo compiles correctly.
+6. **Testing**: I will run `pnpm turbo test` to ensure no regressions were introduced.
 *If any of these fail, I will stop and show you the errors so we can fix them before committing.*
 
 ### Phase 2: Staging & Documentation

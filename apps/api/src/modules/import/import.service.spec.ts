@@ -4,10 +4,12 @@ import { PrismaService } from "../../prisma/prisma.service";
 import { BadRequestException } from "@nestjs/common";
 import * as XLSX from "xlsx";
 
-jest.mock("xlsx", () => ({
-  read: jest.fn(),
+import { vi, describe, it, expect, beforeEach } from "vitest";
+
+vi.mock("xlsx", () => ({
+  read: vi.fn(),
   utils: {
-    sheet_to_json: jest.fn(),
+    sheet_to_json: vi.fn(),
   },
 }));
 
@@ -23,13 +25,13 @@ describe("ImportService", () => {
           provide: PrismaService,
           useValue: {
             student: {
-              findMany: jest.fn(),
-              createMany: jest.fn(),
+              findMany: vi.fn(),
+              createMany: vi.fn(),
             },
-            $transaction: jest.fn((callback) =>
+            $transaction: vi.fn((callback) =>
               callback({
                 student: {
-                  createMany: jest.fn().mockResolvedValue({ count: 1 }),
+                  createMany: vi.fn().mockResolvedValue({ count: 1 }),
                 },
               }),
             ),
@@ -55,11 +57,11 @@ describe("ImportService", () => {
 
   it("should return error if studentName is missing", async () => {
     const buffer = Buffer.from("dummy");
-    (XLSX.read as jest.Mock).mockReturnValue({
+    (XLSX.read as any).mockReturnValue({
       SheetNames: ["Sheet1"],
       Sheets: { Sheet1: {} },
     });
-    (XLSX.utils.sheet_to_json as jest.Mock).mockReturnValue([
+    (XLSX.utils.sheet_to_json as any).mockReturnValue([
       ["Student Name"], // Header
       [""], // Empty name
     ]);
@@ -72,11 +74,11 @@ describe("ImportService", () => {
 
   it("should return error for duplicate GR No. in file", async () => {
     const buffer = Buffer.from("dummy");
-    (XLSX.read as jest.Mock).mockReturnValue({
+    (XLSX.read as any).mockReturnValue({
       SheetNames: ["Sheet1"],
       Sheets: { Sheet1: {} },
     });
-    (XLSX.utils.sheet_to_json as jest.Mock).mockReturnValue([
+    (XLSX.utils.sheet_to_json as any).mockReturnValue([
       ["Student Name", "GR No."],
       ["John Doe", "GR001"],
       ["Jane Doe", "GR001"], // Duplicate
@@ -91,18 +93,16 @@ describe("ImportService", () => {
 
   it("should return error for duplicate GR No. in database", async () => {
     const buffer = Buffer.from("dummy");
-    (XLSX.read as jest.Mock).mockReturnValue({
+    (XLSX.read as any).mockReturnValue({
       SheetNames: ["Sheet1"],
       Sheets: { Sheet1: {} },
     });
-    (XLSX.utils.sheet_to_json as jest.Mock).mockReturnValue([
+    (XLSX.utils.sheet_to_json as any).mockReturnValue([
       ["Student Name", "GR No."],
       ["John Doe", "GR001"],
     ]);
 
-    (prisma.student.findMany as jest.Mock).mockResolvedValue([
-      { grNo: "GR001" },
-    ]);
+    (prisma.student.findMany as any).mockResolvedValue([{ grNo: "GR001" }]);
 
     const result = await service.importStudents(buffer, "format-1", "inst-1");
     expect(result.success).toBe(false);
@@ -113,16 +113,16 @@ describe("ImportService", () => {
 
   it("should successfully import valid data", async () => {
     const buffer = Buffer.from("dummy");
-    (XLSX.read as jest.Mock).mockReturnValue({
+    (XLSX.read as any).mockReturnValue({
       SheetNames: ["Sheet1"],
       Sheets: { Sheet1: {} },
     });
-    (XLSX.utils.sheet_to_json as jest.Mock).mockReturnValue([
+    (XLSX.utils.sheet_to_json as any).mockReturnValue([
       ["Student Name", "GR No."],
       ["John Doe", "GR001"],
     ]);
 
-    (prisma.student.findMany as jest.Mock).mockResolvedValue([]);
+    (prisma.student.findMany as any).mockResolvedValue([]);
 
     const result = await service.importStudents(buffer, "format-1", "inst-1");
     expect(result.success).toBe(true);
