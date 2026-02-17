@@ -1,6 +1,6 @@
+import { Tabs } from "expo-router";
 import React from "react";
 import { Text } from "react-native";
-import { Tabs } from "expo-router";
 
 function TabIcon({ emoji }: { emoji: string }) {
     return <Text style={{ fontSize: 22 }}>{emoji}</Text>;

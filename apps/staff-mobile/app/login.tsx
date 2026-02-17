@@ -1,3 +1,5 @@
+import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import {
     View,
@@ -9,8 +11,7 @@ import {
     Platform,
     ActivityIndicator,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+
 import { useNetworkStatus } from "../src/hooks/use-network-status";
 
 export default function LoginScreen() {

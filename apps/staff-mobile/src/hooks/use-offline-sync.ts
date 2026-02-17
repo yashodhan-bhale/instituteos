@@ -1,8 +1,8 @@
-import { useOnlineManager } from "@tanstack/react-query";
 import NetInfo from "@react-native-community/netinfo";
+import { useOnlineManager , onlineManager } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { Platform } from "react-native";
-import { onlineManager } from "@tanstack/react-query";
+
 
 /**
  * Sync Logic for Offline-First Architecture

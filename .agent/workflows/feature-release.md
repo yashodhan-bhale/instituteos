@@ -14,8 +14,8 @@ This workflow automates the "Professional Git Flow". When you run this, I will p
 ### Phase 1: Local Verification (The Safety Catch)
 3. **Linting**: I will run `pnpm turbo lint` to ensure code style consistency.
 4. **Generating**: I will run `pnpm turbo generate` to sync Prisma clients.
-5. **Building**: I will run `pnpm turbo build` to verify the monorepo compiles correctly.
-6. **Testing**: I will run `pnpm turbo test` to ensure no regressions were introduced.
+5. **Building**: I will run `pnpm turbo build --concurrency 1` to verify the monorepo compiles correctly.
+6. **Testing**: I will run `pnpm turbo test --concurrency 1` to ensure no regressions were introduced.
 *If any of these fail, I will stop and show you the errors so we can fix them before committing.*
 
 ### Phase 2: Staging & Documentation

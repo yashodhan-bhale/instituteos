@@ -1,5 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
 import NetInfo, { NetInfoState } from "@react-native-community/netinfo";
+import { useEffect, useState, useCallback } from "react";
 
 /**
  * Hook to track network connectivity status

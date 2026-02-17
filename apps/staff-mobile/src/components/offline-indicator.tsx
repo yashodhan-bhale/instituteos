@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, Animated } from "react-native";
+
 import { useNetworkStatus } from "../hooks/use-network-status";
 
 /**

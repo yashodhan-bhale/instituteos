@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
+
 import { useNetworkStatus } from "../../src/hooks/use-network-status";
 
 export default function HomeScreen() {

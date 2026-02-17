@@ -1,14 +1,16 @@
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { View } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+
+import { OfflineIndicator } from "../src/components/offline-indicator";
+import { useOfflineSync } from "../src/hooks/use-offline-sync";
 import {
     queryClient,
     asyncStoragePersister,
 } from "../src/lib/query-client";
-import { OfflineIndicator } from "../src/components/offline-indicator";
-import { useOfflineSync } from "../src/hooks/use-offline-sync";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import { View } from "react-native";
+
 
 function RootLayoutInner() {
     // Configure offline sync with TanStack Query
