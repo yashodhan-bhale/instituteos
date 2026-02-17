@@ -6,6 +6,7 @@ export default defineConfig({
         globals: true,
         environment: 'jsdom',
         include: ['src/**/*.spec.{ts,tsx}', 'src/**/*.test.{ts,tsx}'],
+        pool: 'threads',
         coverage: {
             provider: 'v8',
             reporter: ['text', 'json', 'html'],
