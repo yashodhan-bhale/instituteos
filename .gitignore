@@ -7,16 +7,14 @@ dist/
 .next/
 .expo/
 out/
+web-build/
 *.tsbuildinfo
 .eslintcache
 
 # Environment
 .env
-.env.local
-.env.*.local
-.env.dev
-.env.staging
-.env.prod
+.env.*
+!.env.example
 *.local
 
 # Prisma
@@ -46,6 +44,13 @@ pnpm-debug.log*
 
 # Coverage
 coverage/
+
+# Testing
+artifacts/
+
+# Deployment
+.vercel/
+.netlify/
 
 # Temp
 temp/
