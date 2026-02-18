@@ -19,17 +19,33 @@ async function bootstrap() {
     );
 
     app.enableCors({
-      origin: process.env.CORS_ORIGINS?.split(",") || [
-        "http://localhost:3000",
-        "http://localhost:19006",
-      ],
+      origin: (
+        origin: string | undefined,
+        callback: (err: Error | null, allow?: boolean) => void,
+      ) => {
+        if (!origin) return callback(null, true);
+        try {
+          const url = new URL(origin);
+          if (
+            url.hostname === "localhost" ||
+            url.hostname === "127.0.0.1" ||
+            url.hostname.endsWith(".localhost")
+          ) {
+            callback(null, true);
+          } else {
+            callback(new Error("Not allowed by CORS"));
+          }
+        } catch {
+          callback(null, true);
+        }
+      },
       credentials: true,
     });
 
-    // Force port 3001 to avoid conflicts with Next.js or other services being auto-detected as 3000
+    // Force port 3001 and listen on all interfaces
     const port = 3001;
-    await app.listen(port);
-    console.log(`🚀 InstituteOS API running on http://localhost:${port}`);
+    await app.listen(port, "0.0.0.0");
+    console.log(`🚀 InstituteOS API running on http://127.0.0.1:${port}`);
   } catch (err) {
     console.error("FATAL ERROR during bootstrap:", err);
     process.exit(1);

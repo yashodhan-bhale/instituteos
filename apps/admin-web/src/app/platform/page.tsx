@@ -1,148 +1,90 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { Activity } from "lucide-react";
 
 export default function PlatformDashboard() {
-    const [showForm, setShowForm] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState("");
-
-    async function handleCreate(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        setLoading(true);
-        const formData = new FormData(e.currentTarget);
-        const data = Object.fromEntries(formData.entries());
-
-        try {
-            // In a real app, this would be a protected API call
-            const res = await fetch("/api/v1/institutes", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-            });
-
-            if (res.ok) {
-                setMessage("Institute created successfully!");
-                setShowForm(false);
-            } else {
-                setMessage("Error creating institute.");
-            }
-        } catch (err) {
-            setMessage("Failed to connect to API.");
-        } finally {
-            setLoading(false);
-        }
-    }
-
     return (
-        <div className="p-8 max-w-6xl mx-auto">
-            <div className="flex justify-between items-center mb-12">
-                <div>
-                    <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">
-                        Platform Management
+        <div className="space-y-10">
+            {/* Hero Section */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 to-violet-700 rounded-[2.5rem] p-12 text-white shadow-2xl shadow-indigo-200">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl opacity-50"></div>
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-400/20 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl"></div>
+
+                <div className="relative z-10 max-w-2xl">
+                    <h1 className="text-5xl font-black tracking-tight leading-tight">
+                        Platform <br />
+                        <span className="text-indigo-200 uppercase text-xs font-black tracking-[0.3em] bg-white/10 px-3 py-1 rounded-full inline-block mt-4 mb-2">Management Center</span>
                     </h1>
-                    <p className="mt-2 text-gray-500">
-                        Welcome, Super Admin. Oversee the Oxygen of Institutes.
+                    <p className="text-lg text-indigo-50 mt-4 leading-relaxed font-medium opacity-90">
+                        Oversee your multi-tenant ecosystem. Scalability, security, and institute management at your fingertips.
                     </p>
+                    <div className="flex gap-4 mt-10">
+                        <Link
+                            href="/platform/institutes"
+                            className="bg-white text-indigo-700 px-8 py-4 rounded-2xl font-black shadow-xl shadow-black/10 hover:-translate-y-1 transition-all active:scale-95"
+                        >
+                            Manage Institutes
+                        </Link>
+                        <button
+                            className="bg-indigo-500/30 backdrop-blur-md border border-indigo-400/30 text-white px-8 py-4 rounded-2xl font-black hover:bg-indigo-500/50 transition-all"
+                        >
+                            Platform Logs
+                        </button>
+                    </div>
                 </div>
-                <button
-                    onClick={() => setShowForm(!showForm)}
-                    className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:-translate-y-0.5 transition-all"
-                >
-                    {showForm ? "Cancel" : "Add New Institute"}
-                </button>
             </div>
 
-            {showForm && (
-                <div className="mb-12 p-8 bg-white rounded-2xl border border-indigo-100 shadow-xl animate-in fade-in slide-in-from-top-4 duration-300">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-6">Create Institute</h2>
-                    <form onSubmit={handleCreate} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                            <label className="text-sm font-semibold text-gray-700">Institute Name</label>
-                            <input
-                                name="name"
-                                required
-                                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
-                                placeholder="e.g. Greenwood High School"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-sm font-semibold text-gray-700">Subdomain</label>
-                            <div className="flex items-center">
-                                <input
-                                    name="domain"
-                                    required
-                                    className="w-full px-4 py-3 rounded-l-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
-                                    placeholder="greenwood"
-                                />
-                                <span className="px-4 py-3 bg-gray-50 border border-l-0 border-gray-200 rounded-r-xl text-gray-500">
-                                    .instituteos.app
-                                </span>
-                            </div>
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-sm font-semibold text-gray-700">Admin Email</label>
-                            <input
-                                name="adminEmail"
-                                type="email"
-                                required
-                                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
-                                placeholder="admin@greenwood.com"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-sm font-semibold text-gray-700">Admin Full Name</label>
-                            <input
-                                name="adminName"
-                                required
-                                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
-                                placeholder="John Doe"
-                            />
-                        </div>
-                        <div className="md:col-span-2">
-                            <button
-                                disabled={loading}
-                                className="w-full py-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-xl font-bold shadow-lg shadow-indigo-100 hover:opacity-90 disabled:opacity-50 transition-all"
-                            >
-                                {loading ? "Provisioning..." : "Launch Institute"}
-                            </button>
-                        </div>
-                    </form>
-                    {message && (
-                        <p className={`mt-4 text-center text-sm font-medium ${message.includes("success") ? "text-emerald-600" : "text-red-600"}`}>
-                            {message}
-                        </p>
-                    )}
-                </div>
-            )}
-
-            {/* Stats Cards */}
+            {/* Quick Actions / Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <StatCard title="Active Institutes" value="12" growth="+2 this month" color="indigo" />
-                <StatCard title="Total Students" value="4,850" growth="+12% from Jan" color="emerald" />
-                <StatCard title="Platform Revenue" value="$14,200" growth="+8% ARR" color="violet" />
+                <StatCard
+                    title="Active Institutes"
+                    value="2"
+                    growth="+100%"
+                    color="indigo"
+                    description="Successfully provisioned"
+                />
+                <StatCard
+                    title="System Health"
+                    value="99.9%"
+                    growth="Stable"
+                    color="emerald"
+                    description="Across all instances"
+                />
+                <StatCard
+                    title="Platform Revenue"
+                    value="$1,250"
+                    growth="+15%"
+                    color="violet"
+                    description="Current Billing Cycle"
+                />
             </div>
 
-            <div className="mt-16 bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
-                <h2 className="text-2xl font-bold text-gray-800 mb-6">Recent Activity</h2>
-                <div className="space-y-4">
+            {/* Activity Table Placeholder */}
+            <div className="bg-white rounded-[2rem] border border-slate-200 p-10 shadow-sm">
+                <div className="flex items-center justify-between mb-8">
+                    <h2 className="text-2xl font-black text-slate-900 tracking-tight">System Events</h2>
+                    <button className="text-sm font-bold text-indigo-600 hover:bg-indigo-50 px-4 py-2 rounded-xl transition-colors">View Audit Log</button>
+                </div>
+                <div className="space-y-6">
                     <ActivityItem
                         user="System"
-                        action="Successfully backed up database"
-                        time="2 hours ago"
-                        tag="Database"
+                        action="Database migration completed successfully"
+                        time="10 mins ago"
+                        tag="Core"
                     />
                     <ActivityItem
-                        user="SuperAdmin (You)"
-                        action="Created 'St. Mary's Academy' institute"
-                        time="5 hours ago"
-                        tag="Provisioning"
+                        user="SuperAdmin"
+                        action="Updated platform routing configuration"
+                        time="1 hour ago"
+                        tag="Routing"
                     />
                     <ActivityItem
-                        user="Sales Team"
-                        action="Converted 'Oakwood Prep' from Trial to Basic"
-                        time="1 day ago"
-                        tag="Billing"
+                        user="Provisioner"
+                        action="New instance 'Global Tech' initialized"
+                        time="3 hours ago"
+                        tag="Instance"
                     />
                 </div>
             </div>
@@ -150,22 +92,25 @@ export default function PlatformDashboard() {
     );
 }
 
-function StatCard({ title, value, growth, color }: any) {
+function StatCard({ title, value, growth, color, description }: any) {
     const colors: any = {
-        indigo: "from-indigo-500 to-blue-500 shadow-indigo-100",
-        emerald: "from-emerald-500 to-teal-500 shadow-emerald-100",
-        violet: "from-violet-500 to-purple-500 shadow-violet-100",
+        indigo: "from-indigo-600 to-blue-600 shadow-indigo-100 ring-indigo-50",
+        emerald: "from-emerald-600 to-teal-600 shadow-emerald-100 ring-emerald-50",
+        violet: "from-violet-600 to-purple-600 shadow-violet-100 ring-violet-50",
     };
     return (
-        <div className={`p-8 bg-white rounded-2xl border border-gray-100 shadow-xl transition-transform hover:-translate-y-1`}>
-            <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider">{title}</h3>
-            <div className="flex items-end justify-between mt-4">
-                <p className="text-4xl font-black text-gray-800">{value}</p>
-                <span className="text-xs font-bold text-emerald-500 bg-emerald-50 px-2 py-1 rounded-full">
+        <div className="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 group">
+            <div className="flex justify-between items-start mb-4">
+                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${colors[color]} flex items-center justify-center text-white shadow-lg`}>
+                    <Activity className="w-6 h-6" />
+                </div>
+                <span className="text-xs font-black text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">
                     {growth}
                 </span>
             </div>
-            <div className={`h-1.5 w-full bg-gradient-to-r ${colors[color]} rounded-full mt-6 opacity-30`} />
+            <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">{title}</h3>
+            <p className="text-4xl font-black text-slate-900 mt-2 mb-1">{value}</p>
+            <p className="text-xs font-bold text-slate-400">{description}</p>
         </div>
     );
 }

@@ -9,25 +9,35 @@ import { Suspense } from "react";
 function LoginForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
+
+    // State
     const [isPlatform, setIsPlatform] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-    // Subdomain / Context Detection
+    // Handle initial check on mount to avoid hydration mismatch
     useEffect(() => {
-        // 1. Check URL first
+        setIsMounted(true);
         if (typeof window !== "undefined") {
             const hostname = window.location.hostname;
-            if (hostname.startsWith("platform.")) {
+            const target = new URLSearchParams(window.location.search).get("target");
+
+            if (hostname.startsWith("platform.") || target === "platform") {
                 setIsPlatform(true);
             }
         }
-
-        // 2. Check query param (force override from middleware)
-        if (searchParams.get("target") === "platform") {
-            setIsPlatform(true);
-        }
     }, [searchParams]);
+
+    // Don't render until client-side logic has determined context to prevent hydration mismatch
+    if (!isMounted) {
+        return (
+            <div className="p-8 text-center bg-white rounded-2xl shadow-xl border border-gray-100 min-w-[350px]">
+                <Loader2 className="h-8 w-8 animate-spin mx-auto text-indigo-600" />
+                <p className="mt-4 text-gray-500 text-sm">Detecting workspace...</p>
+            </div>
+        );
+    }
 
     async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -37,24 +47,17 @@ function LoginForm() {
         const formData = new FormData(e.currentTarget);
         const email = formData.get("email") as string;
         const password = formData.get("password") as string;
-        const instituteId = formData.get("instituteId") as string;
 
         try {
-            // Determine Endpoint
+            // Determine Endpoint - Using 127.0.0.1 to avoid localhost DNS/IPv6 issues
             const endpoint = isPlatform
-                ? "http://localhost:3001/api/v1/auth/platform-login"
-                : "http://localhost:3001/api/v1/auth/login";
-
-            const body: any = { email, password };
-            if (!isPlatform && instituteId) {
-                // If we are on the main domain but logging into an institute, passing instituteId might be needed
-                // But optimally, the subdomain handles it. For now, let's just send what we have.
-            }
+                ? "/api/v1/auth/platform-login"
+                : "/api/v1/auth/login";
 
             const res = await fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(body),
+                body: JSON.stringify({ email, password }),
             });
 
             const data = await res.json();
@@ -64,15 +67,25 @@ function LoginForm() {
             }
 
             // Success!
-            // In a real app, we'd set a secure cookie here via a Server Action or Route Handler proxy.
-            // For this MVP, we'll set it client-side to satisfy the middleware.
-            document.cookie = `auth_token=${data.accessToken}; path=/; max-age=86400; SameSite=Lax`;
+            // Set cookie on the root domain to allow cross-subdomain access
+            const cookieDomain = window.location.hostname.includes("localhost") ? "" : `; domain=.${window.location.hostname.split('.').slice(-2).join('.')}`;
+            document.cookie = `auth_token=${data.accessToken}; path=/; max-age=86400; SameSite=Lax${cookieDomain}`;
 
-            // Redirect
+            // Redirect to appropriate domain
+            const hostname = window.location.hostname;
+            const protocol = window.location.protocol;
+            const port = window.location.port ? `:${window.location.port}` : "";
+
             if (isPlatform) {
-                router.push("/platform");
+                if (!hostname.startsWith("platform.")) {
+                    // Force redirect to platform subdomain
+                    const rootDomain = hostname.includes("localhost") ? "localhost" : hostname.split('.').slice(-2).join('.');
+                    window.location.href = `${protocol}//platform.${rootDomain}${port}/platform`;
+                } else {
+                    router.push("/platform");
+                }
             } else {
-                router.push("/dashboard");
+                router.push("/institute");
             }
         } catch (err: any) {
             setError(err.message);
@@ -114,7 +127,7 @@ function LoginForm() {
                             type="email"
                             required
                             className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
-                            placeholder={isPlatform ? "admin@instituteos.com" : "principal@school.com"}
+                            placeholder={isPlatform ? "admin@instituteos.com" : "principal@institute.com"}
                         />
                     </div>
 

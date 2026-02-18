@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 // Updated Nav Items based on typical dashboard needs
 const NAV_ITEMS = [
     { label: "Dashboard", href: "/", icon: "📊" },
-    { label: "School", href: "/school", icon: "🏫" },
+    { label: "Institute", href: "/institute", icon: "🏫" },
     { label: "Student", href: "/students", icon: "👨‍🎓" },
     { label: "Teacher", href: "/staff", icon: "👩‍🏫" },
     { label: "Parent", href: "/parents", icon: "👨‍👩‍👧‍👦" },
