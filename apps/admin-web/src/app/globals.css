@@ -4,49 +4,92 @@
 
 @layer base {
     :root {
-        --background: 0 0% 100%;
-        --foreground: 222.2 84% 4.9%;
-        --card: 0 0% 100%;
+        /* Light Mode */
+        --background: 210 40% 98%; /* Light Slate */
+        --foreground: 222.2 84% 4.9%; /* Dark Text */
+
+        --card: 0 0% 100%; /* White */
         --card-foreground: 222.2 84% 4.9%;
+
         --popover: 0 0% 100%;
         --popover-foreground: 222.2 84% 4.9%;
-        --primary: 221.2 83.2% 53.3%;
-        --primary-foreground: 210 40% 98%;
+
+        /* Primary: Teal/Green #1d9c79 -> HSL 163 69% 36% */
+        --primary: 163 69% 36%;
+        --primary-foreground: 0 0% 100%;
+
+        /* Secondary: Neutral Gray for actions */
         --secondary: 210 40% 96.1%;
         --secondary-foreground: 222.2 47.4% 11.2%;
+
+        /* Muted: Lighter */
         --muted: 210 40% 96.1%;
         --muted-foreground: 215.4 16.3% 46.9%;
+
+        /* Accent: Hover states */
         --accent: 210 40% 96.1%;
         --accent-foreground: 222.2 47.4% 11.2%;
+
+        /* Destructive */
         --destructive: 0 84.2% 60.2%;
         --destructive-foreground: 210 40% 98%;
+
         --border: 214.3 31.8% 91.4%;
         --input: 214.3 31.8% 91.4%;
-        --ring: 221.2 83.2% 53.3%;
-        --radius: 0.5rem;
+        --ring: 163 69% 36%; /* Match Primary */
+
+        --radius: 0.5rem; /* Rounded-lg */
         --sidebar-width: 280px;
+
+        /* Chart Colors */
+        --chart-1: 163 69% 36%; /* Teal */
+        --chart-2: 24 95% 53%; /* Orange #F97316 */
+        --chart-3: 271 70% 64%; /* Purple */
+        --chart-4: 221 83% 53%; /* Blue */
+        --chart-5: 35 92% 52%; /* Yellow/Gold */
     }
 
     .dark {
-        --background: 222.2 84% 4.9%;
+        /* Dark Mode */
+        --background: 222.2 47% 11%;    /* #0f172a / Slate 900 */
         --foreground: 210 40% 98%;
-        --card: 222.2 84% 4.9%;
+
+        --card: 217.2 32.6% 17.5%;      /* #1e293b / Slate 800 */
         --card-foreground: 210 40% 98%;
-        --popover: 222.2 84% 4.9%;
+
+        --popover: 217.2 32.6% 17.5%;
         --popover-foreground: 210 40% 98%;
-        --primary: 217.2 91.2% 59.8%;
-        --primary-foreground: 222.2 47.4% 11.2%;
+
+        /* Primary: Teal (Slightly brighter for dark mode? Let's use same for consistency) */
+        --primary: 163 69% 36%;
+        --primary-foreground: 0 0% 100%;
+
+        /* Secondary */
         --secondary: 217.2 32.6% 17.5%;
         --secondary-foreground: 210 40% 98%;
+
+        /* Muted */
         --muted: 217.2 32.6% 17.5%;
         --muted-foreground: 215 20.2% 65.1%;
+
+        /* Accent */
         --accent: 217.2 32.6% 17.5%;
         --accent-foreground: 210 40% 98%;
+
+        /* Destructive */
         --destructive: 0 62.8% 30.6%;
         --destructive-foreground: 210 40% 98%;
+
         --border: 217.2 32.6% 17.5%;
         --input: 217.2 32.6% 17.5%;
-        --ring: 224.3 76.3% 48%;
+        --ring: 163 69% 36%;
+        
+        /* Chart Colors (Dark Mode Adjustments if needed) */
+        --chart-1: 163 69% 36%;
+        --chart-2: 24 95% 53%;
+        --chart-3: 271 70% 64%;
+        --chart-4: 221 83% 53%;
+        --chart-5: 35 92% 52%;
     }
 }
 

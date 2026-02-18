@@ -5,124 +5,127 @@ export default function DashboardPage() {
         <div className="space-y-8">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                <h1 className="text-2xl font-bold tracking-tight text-foreground">
                     Dashboard
                 </h1>
-                <p className="text-muted-foreground mt-1">
-                    Welcome back to InstituteOS — your institute at a glance.
+                <p className="text-muted-foreground text-sm mt-1">
+                    School_Name &rarr; Manage your school, track attendance, expense, and net worth.
                 </p>
             </div>
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Top Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
                 <StatCard
-                    title="Total Students"
-                    value="1,247"
-                    change="+12%"
+                    title="Total Student"
+                    value="20,000"
+                    change="10%"
+                    trend="+5 This Month"
                     changeType="positive"
-                    icon="👨‍🎓"
+                    icon="👨‍🎓" // In real app, use SVG icons like lucide-react
+                    color="orange"
                 />
                 <StatCard
-                    title="Staff Members"
-                    value="86"
-                    change="+3"
+                    title="Total Teachers"
+                    value="1,500"
+                    change="5%"
+                    trend="+2 This Month"
                     changeType="positive"
                     icon="👩‍🏫"
+                    color="blue"
                 />
                 <StatCard
-                    title="Tasks Pending"
-                    value="23"
-                    change="-5"
-                    changeType="negative"
-                    icon="📋"
-                />
-                <StatCard
-                    title="Attendance Today"
-                    value="94.2%"
-                    change="+1.3%"
+                    title="Total Parents"
+                    value="15,000"
+                    change="12%"
+                    trend="+10 This Month"
                     changeType="positive"
-                    icon="✅"
+                    icon="👨‍👩‍👧‍👦"
+                    color="purple"
                 />
             </div>
 
-            {/* ROI Dashboard Widget */}
-            <RoiDashboard />
+            {/* Second Row Stats (if needed for 4th card like Revenue or Attendance) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <StatCard
+                    title="Revenue"
+                    value="$50,000"
+                    change="8%"
+                    trend="+$1k This Month"
+                    changeType="positive"
+                    icon="💰"
+                    color="emerald"
+                />
+                {/* Placeholder for Attendance card style from image which is different */}
+                <div className="rounded-2xl border bg-card p-6 shadow-sm flex flex-col justify-between">
+                    <h3 className="font-semibold text-foreground mb-4">Student Attendance</h3>
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between text-sm">
+                            <span className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-emerald-500"></span> Present</span>
+                            <span className="font-bold">87%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                            <div className="bg-emerald-500 h-2 rounded-full" style={{ width: "87%" }}></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            {/* Quick Actions */}
+            {/* Revenue Statistic (ROI Dashboard) */}
+            <div className="rounded-2xl border bg-card p-6 shadow-sm">
+                <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-lg font-bold text-foreground">Revenue Statistic</h3>
+                    <div className="flex gap-2 text-sm">
+                        <span className="flex items-center gap-1 text-emerald-600 font-medium">● Total Fee: $500</span>
+                        <span className="flex items-center gap-1 text-orange-500 font-medium">● Collected Fee: $300</span>
+                    </div>
+                </div>
+                {/* Reusing existing component but assuming it fits the style */}
+                <RoiDashboard />
+            </div>
+
+            {/* Bottom Widgets Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="rounded-xl border bg-card p-6 shadow-sm">
-                    <h3 className="text-lg font-semibold mb-4">Recent Tasks</h3>
-                    <div className="space-y-3">
-                        {[
-                            { title: "Update fee structure", status: "IN_PROGRESS", priority: "HIGH" },
-                            { title: "Prepare exam schedule", status: "PENDING", priority: "URGENT" },
-                            { title: "Staff meeting minutes", status: "DONE", priority: "MEDIUM" },
-                        ].map((task, i) => (
-                            <div
-                                key={i}
-                                className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
-                            >
-                                <span className="font-medium">{task.title}</span>
-                                <div className="flex gap-2">
-                                    <span
-                                        className={`text-xs px-2 py-1 rounded-full font-medium ${task.priority === "URGENT"
-                                                ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-                                                : task.priority === "HIGH"
-                                                    ? "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400"
-                                                    : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
-                                            }`}
-                                    >
-                                        {task.priority}
-                                    </span>
-                                    <span
-                                        className={`text-xs px-2 py-1 rounded-full font-medium ${task.status === "DONE"
-                                                ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                                                : task.status === "IN_PROGRESS"
-                                                    ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
-                                                    : "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400"
-                                            }`}
-                                    >
-                                        {task.status.replace("_", " ")}
-                                    </span>
+                {/* Notice Board */}
+                <div className="rounded-2xl border bg-card p-6 shadow-sm">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-bold">Notice Board</h3>
+                        <button className="text-muted-foreground hover:text-foreground">•••</button>
+                    </div>
+                    <div className="space-y-4">
+                        {[1, 2, 3].map((_, i) => (
+                            <div key={i} className="flex gap-4 items-start">
+                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-lg">
+                                    📢
+                                </div>
+                                <div>
+                                    <h4 className="text-sm font-bold">Admin</h4>
+                                    <p className="text-xs text-muted-foreground line-clamp-2">
+                                        Lorem ipsum is simply dummy text of the printing and typesetting industry.
+                                    </p>
+                                    <p className="text-[10px] text-muted-foreground mt-1">25 Jan 2024</p>
                                 </div>
                             </div>
                         ))}
                     </div>
                 </div>
 
-                <div className="rounded-xl border bg-card p-6 shadow-sm">
-                    <h3 className="text-lg font-semibold mb-4">Smart Signals</h3>
+                {/* Upcoming Events */}
+                <div className="rounded-2xl border bg-card p-6 shadow-sm">
+                    <h3 className="text-lg font-bold mb-4">Upcoming Events</h3>
                     <div className="space-y-3">
                         {[
-                            {
-                                type: "warning",
-                                message: "Attendance dropped 18% below average for Class 8-B",
-                                time: "2 hours ago",
-                            },
-                            {
-                                type: "alert",
-                                message: "3 tasks due within 24 hours",
-                                time: "30 min ago",
-                            },
-                            {
-                                type: "info",
-                                message: "Fee collection 92% complete for this month",
-                                time: "1 hour ago",
-                            },
-                        ].map((signal, i) => (
-                            <div
-                                key={i}
-                                className={`p-3 rounded-lg border-l-4 ${signal.type === "warning"
-                                        ? "border-l-yellow-500 bg-yellow-50 dark:bg-yellow-900/10"
-                                        : signal.type === "alert"
-                                            ? "border-l-red-500 bg-red-50 dark:bg-red-900/10"
-                                            : "border-l-blue-500 bg-blue-50 dark:bg-blue-900/10"
-                                    }`}
-                            >
-                                <p className="text-sm font-medium">{signal.message}</p>
-                                <p className="text-xs text-muted-foreground mt-1">
-                                    {signal.time}
-                                </p>
+                            { time: "09:00 - 09:45 AM", title: "Marketing Strategy Kickoff", lead: "Robert Fox" },
+                            { time: "11:15 - 12:00 AM", title: "Product Design Brainstorm", lead: "Leslie Alexander" }
+                        ].map((event, i) => (
+                            <div key={i} className="flex items-center justify-between p-3 rounded-xl hover:bg-muted/50 transition-colors border border-transparent hover:border-border">
+                                <div>
+                                    <p className="text-xs font-semibold text-primary">{event.time}</p>
+                                    <p className="text-sm font-bold mt-1">{event.title}</p>
+                                    <p className="text-xs text-muted-foreground">Lead by {event.lead}</p>
+                                </div>
+                                <button className="px-3 py-1 text-xs font-medium rounded-lg bg-muted text-foreground hover:bg-background border border-border transition-all">
+                                    View
+                                </button>
                             </div>
                         ))}
                     </div>
@@ -136,32 +139,48 @@ function StatCard({
     title,
     value,
     change,
+    trend,
     changeType,
     icon,
+    color = "emerald",
 }: {
     title: string;
     value: string;
     change: string;
+    trend: string;
     changeType: "positive" | "negative";
     icon: string;
+    color?: "emerald" | "orange" | "purple" | "blue";
 }) {
+    // Map colors to Tailwind classes
+    const colorClasses = {
+        emerald: "bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400",
+        orange: "bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400",
+        purple: "bg-purple-100 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400",
+        blue: "bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400",
+    };
+
     return (
-        <div className="group relative overflow-hidden rounded-xl border bg-card p-6 shadow-sm hover:shadow-md transition-all duration-200">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="flex items-center justify-between">
-                <div>
-                    <p className="text-sm text-muted-foreground">{title}</p>
-                    <p className="text-2xl font-bold mt-1">{value}</p>
-                    <p
-                        className={`text-xs mt-1 font-medium ${changeType === "positive"
-                                ? "text-emerald-600 dark:text-emerald-400"
-                                : "text-red-600 dark:text-red-400"
-                            }`}
-                    >
-                        {change} from last month
-                    </p>
+        <div className="group relative overflow-hidden rounded-2xl border bg-card p-6 shadow-sm hover:shadow-md transition-all duration-200">
+            <div className="flex items-start gap-4">
+                <div className={`w-14 h-14 rounded-full flex items-center justify-center text-2xl ${colorClasses[color]} transition-transform group-hover:scale-110`}>
+                    {icon}
                 </div>
-                <span className="text-3xl">{icon}</span>
+                <div>
+                    <p className="text-sm font-medium text-muted-foreground">{title}</p>
+                    <p className="text-3xl font-bold mt-1 text-foreground">{value}</p>
+                    <div className="flex items-center gap-2 mt-2">
+                        <span
+                            className={`text-xs font-bold px-1.5 py-0.5 rounded ${changeType === "positive"
+                                ? "bg-emerald-100/50 text-emerald-600 dark:text-emerald-400"
+                                : "bg-red-100/50 text-red-600 dark:text-red-400"
+                                }`}
+                        >
+                            {changeType === "positive" ? "▲" : "▼"} {change}
+                        </span>
+                        <span className="text-xs text-muted-foreground font-medium">{trend}</span>
+                    </div>
+                </div>
             </div>
         </div>
     );
