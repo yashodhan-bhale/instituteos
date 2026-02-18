@@ -54,3 +54,6 @@ artifacts/
 
 # Temp
 temp/
+
+# Agent Skills
+.agent/skills/*/resources/
