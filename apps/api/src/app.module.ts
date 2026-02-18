@@ -8,6 +8,7 @@ import { TaskModule } from "./modules/task/task.module";
 import { SignalModule } from "./modules/signal/signal.module";
 import { ImportModule } from "./modules/import/import.module";
 import { InstituteModule } from "./modules/institute/institute.module";
+import { StudentModule } from "./modules/student/student.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { AppController } from "./app.controller";
 
@@ -23,6 +24,7 @@ import { AppController } from "./app.controller";
     SignalModule,
     ImportModule,
     InstituteModule,
+    StudentModule,
   ],
   controllers: [AppController],
 })

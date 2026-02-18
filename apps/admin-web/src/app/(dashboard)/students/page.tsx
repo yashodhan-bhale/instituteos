@@ -1,0 +1,120 @@
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
+import { DataTable } from "@/components/data-table/data-table";
+import { ColumnDef } from "@tanstack/react-table";
+import { Plus, Download, Filter, Search, MoreHorizontal } from "lucide-react";
+import Link from "next/link";
+
+interface Student {
+    id: string;
+    studentName: string;
+    grNo: string | null;
+    division: string | null;
+    gender: string | null;
+    birthDate: string | null;
+    category: string | null;
+    motherName: string | null;
+}
+
+const columns: ColumnDef<Student>[] = [
+    {
+        accessorKey: "studentName",
+        header: "Student Name",
+        cell: ({ row }) => (
+            <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">
+                    {row.original.studentName.split(' ').map(n => n[0]).join('')}
+                </div>
+                <span className="font-semibold">{row.original.studentName}</span>
+            </div>
+        ),
+    },
+    {
+        accessorKey: "grNo",
+        header: "GR No",
+    },
+    {
+        accessorKey: "division",
+        header: "Division",
+    },
+    {
+        accessorKey: "gender",
+        header: "Gender",
+    },
+    {
+        accessorKey: "birthDate",
+        header: "Birth Date",
+        cell: ({ row }) => row.original.birthDate ? new Date(row.original.birthDate).toLocaleDateString() : "-",
+    },
+    {
+        accessorKey: "category",
+        header: "Category",
+    },
+    {
+        id: "actions",
+        cell: ({ row }) => (
+            <button className="p-2 hover:bg-muted rounded-full">
+                <MoreHorizontal className="h-4 w-4" />
+            </button>
+        ),
+    }
+];
+
+export default function StudentsPage() {
+    const { data: students, isLoading, error } = useQuery<Student[]>({
+        queryKey: ["students"],
+        queryFn: async () => {
+            const res = await fetch("/api/v1/students", {
+                // In a real app, you'd pass auth tokens here
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            if (!res.ok) throw new Error("Failed to fetch students");
+            return res.json();
+        },
+    });
+
+    return (
+        <div className="space-y-6">
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-2xl font-bold tracking-tight text-foreground">Students</h1>
+                    <p className="text-muted-foreground text-sm mt-1">
+                        Manage and track all students in the institute.
+                    </p>
+                </div>
+                <div className="flex items-center gap-3">
+                    <button className="flex items-center gap-2 px-4 py-2 bg-white border rounded-xl text-sm font-medium hover:bg-muted transition-all">
+                        <Download className="h-4 w-4" /> Export
+                    </button>
+                    <Link
+                        href="/students/import"
+                        className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-bold shadow-lg shadow-primary/20 hover:opacity-90 transition-all"
+                    >
+                        <Plus className="h-4 w-4" /> Bulk Import
+                    </Link>
+                </div>
+            </div>
+
+            <div className="rounded-2xl border bg-card p-6 shadow-sm">
+                {isLoading ? (
+                    <div className="h-64 flex items-center justify-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                    </div>
+                ) : error ? (
+                    <div className="h-64 flex items-center justify-center text-red-500">
+                        Error loading students: {(error as Error).message}
+                    </div>
+                ) : (
+                    <DataTable
+                        columns={columns}
+                        data={students || []}
+                        searchPlaceholder="Search students by name, GR No..."
+                    />
+                )}
+            </div>
+        </div>
+    );
+}

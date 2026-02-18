@@ -30,13 +30,13 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 {/* Logo */}
                 <div className="flex items-center gap-3 px-6 py-5">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-teal-500/20">
-                        ED
+                        AK
                     </div>
                     {sidebarOpen && (
                         <div className="overflow-hidden">
-                            <h1 className="text-xl font-bold tracking-tight text-foreground">EduDash</h1>
+                            <h1 className="text-xl font-bold tracking-tight text-foreground line-clamp-1">AK National</h1>
                             <p className="text-[10px] text-muted-foreground tracking-widest uppercase">
-                                v2.0
+                                High School
                             </p>
                         </div>
                     )}

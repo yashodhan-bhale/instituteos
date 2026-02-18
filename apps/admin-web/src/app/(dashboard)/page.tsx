@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { RoiDashboard } from "@/components/dashboard/roi-dashboard";
 
 export default function DashboardPage() {
@@ -9,7 +10,7 @@ export default function DashboardPage() {
                     Dashboard
                 </h1>
                 <p className="text-muted-foreground text-sm mt-1">
-                    School_Name &rarr; Manage your school, track attendance, expense, and net worth.
+                    A K National High School, Khamgaon &rarr; Manage your school, track attendance, expense, and net worth.
                 </p>
             </div>
 
@@ -17,27 +18,27 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
                 <StatCard
                     title="Total Student"
-                    value="20,000"
-                    change="10%"
-                    trend="+5 This Month"
+                    value="597"
+                    change="100%"
+                    trend="+597 This Month"
                     changeType="positive"
                     icon="👨‍🎓" // In real app, use SVG icons like lucide-react
                     color="orange"
                 />
                 <StatCard
                     title="Total Teachers"
-                    value="1,500"
-                    change="5%"
-                    trend="+2 This Month"
+                    value="42"
+                    change="0%"
+                    trend="Stable"
                     changeType="positive"
                     icon="👩‍🏫"
                     color="blue"
                 />
                 <StatCard
                     title="Total Parents"
-                    value="15,000"
-                    change="12%"
-                    trend="+10 This Month"
+                    value="580"
+                    change="0%"
+                    trend="New Enrollment"
                     changeType="positive"
                     icon="👨‍👩‍👧‍👦"
                     color="purple"
@@ -85,25 +86,31 @@ export default function DashboardPage() {
 
             {/* Bottom Widgets Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Notice Board */}
+                {/* Recently Imported Students */}
                 <div className="rounded-2xl border bg-card p-6 shadow-sm">
                     <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-bold">Notice Board</h3>
-                        <button className="text-muted-foreground hover:text-foreground">•••</button>
+                        <h3 className="text-lg font-bold">Recently Imported Students</h3>
+                        <Link href="/students" className="text-xs text-primary hover:underline">View All</Link>
                     </div>
                     <div className="space-y-4">
-                        {[1, 2, 3].map((_, i) => (
-                            <div key={i} className="flex gap-4 items-start">
-                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-lg">
-                                    📢
+                        {[
+                            { name: "Anjili Ramrao Deshmukh", grNo: "44458", date: "Today" },
+                            { name: "Dikshant Kailas Telang", grNo: "42306", date: "Today" },
+                            { name: "Prachi Mangesh Modkar", grNo: "42818", date: "Today" },
+                            { name: "Arushi Shankar Shinde", grNo: "41976", date: "Today" },
+                            { name: "Darshana Ashok Ugale", grNo: "41975", date: "Today" }
+                        ].map((student, i) => (
+                            <div key={i} className="flex gap-4 items-center p-2 rounded-lg hover:bg-muted/50 transition-colors">
+                                <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-500/20 flex items-center justify-center text-orange-600 dark:text-orange-400 text-sm font-bold">
+                                    {student.name.split(' ').map(n => n[0]).join('')}
                                 </div>
-                                <div>
-                                    <h4 className="text-sm font-bold">Admin</h4>
-                                    <p className="text-xs text-muted-foreground line-clamp-2">
-                                        Lorem ipsum is simply dummy text of the printing and typesetting industry.
+                                <div className="flex-1">
+                                    <h4 className="text-sm font-bold">{student.name}</h4>
+                                    <p className="text-xs text-muted-foreground">
+                                        GR No: {student.grNo}
                                     </p>
-                                    <p className="text-[10px] text-muted-foreground mt-1">25 Jan 2024</p>
                                 </div>
+                                <div className="text-[10px] text-muted-foreground">{student.date}</div>
                             </div>
                         ))}
                     </div>
