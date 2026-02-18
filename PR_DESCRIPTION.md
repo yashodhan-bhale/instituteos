@@ -1,25 +1,23 @@
-## 🚀 CI/CD Stability & Mobile Testing Migration
+# PR Description: Infrastructure Improvements - Gitignore Optimization
 
-### 📝 Summary
-This PR addresses critical stability issues in the CI pipeline and migrates the mobile application testing infrastructure to a more robust setup.
+## Overview
+This PR updates the root `.gitignore` file to ensure that development artifacts from mobile development, automated testing, and various deployment platforms are correctly ignored. It also simplifies environment file management.
 
-### ✅ Key Changes
-- **Testing Infrastructure**: Migrated `staff-mobile` from Vitest to Jest (`jest-expo`) to resolve compatibility issues with React Native components.
-- **Linting & Quality**: 
-  - Fixed `eslint-config-universe` peer dependency conflicts.
-  - Resolved `prettier` v3 compatibility issues in `eslint-plugin-prettier`.
-  - Added missing ESLint plugins for React Native and TypeScript.
-- **Build Stability**: 
-  - Updated `feature-release` workflow to run build/test steps sequentially (`--concurrency 1`) to prevent resource exhaustion.
-  - Added necessary type definitions (`node`, `express`, `multer`, etc.) to `apps/api/tsconfig.json` to fix build errors.
+## Changes
+### ⚙️ Infrastructure
+- **Mobile (Expo/React Native)**: Added `web-build/` to ignore local web distributions.
+- **Testing (Detox)**: Added `artifacts/` to ignore recordings and screenshots from E2E tests.
+- **Deployment**: Added `.vercel/` and `.netlify/` to prevent project-specific deployment metadata from being tracked.
+- **Environment Management**: Consolidated `.env` patterns into `.env.*` while explicitly keeping `!.env.example` to ensure the template remains tracked.
 
-### 🔍 Verification
-- **Lint**: `pnpm turbo lint` ✅ Passed (with minor warnings)
-- **type-check**: `pnpm turbo build` ✅ Passed
-- **Test**: `pnpm turbo test` ✅ Passed for all packages (API, Admin, Mobile)
+## Verification Results
+### ✅ Local Checks
+- `pnpm turbo lint`: Passed (with minor warnings in mobile hooks)
+- `pnpm turbo generate`: Successful (Prisma client updated)
+- `pnpm turbo build`: All packages (API, Admin-Web, Mobile, Libraries) built successfully.
+- `pnpm turbo test`: All unit/smoke tests passed across the monorepo.
 
-### 📦 Dependencies
-- Added `jest`, `jest-expo`, `eslint-plugin-react-native` (and related plugins) to `staff-mobile`.
-- Updated `pnpm-lock.yaml`.
-
-This ensures a green pipeline for future feature releases! 🟢
+## Checklist
+- [x] Correct ignores added for all active frameworks (Next.js, NestJS, Expo).
+- [x] Environment patterns are robust.
+- [x] Local verification passed.
