@@ -1,20 +1,18 @@
 {
-    "extends": "../../tsconfig.json",
-    "compilerOptions": {
-        "strict": true,
-        "jsx": "react-jsx",
-        "module": "ESNext",
-        "moduleResolution": "bundler",
-        "paths": {
-            "@/*": [
-                "./src/*"
-            ]
-        }
-    },
-    "include": [
-        "**/*.ts",
-        "**/*.tsx",
-        ".expo/types/**/*.ts",
-        "expo-env.d.ts"
-    ]
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ]
 }
