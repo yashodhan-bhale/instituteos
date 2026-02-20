@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
     LayoutDashboard,
     School,
@@ -14,7 +14,8 @@ import {
     User,
     Menu,
     X,
-    ChevronLeft
+    ChevronLeft,
+    LogOut
 } from "lucide-react";
 
 const PLATFORM_NAV_ITEMS = [
@@ -28,6 +29,21 @@ const PLATFORM_NAV_ITEMS = [
 export function PlatformLayout({ children }: { children: React.ReactNode }) {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const pathname = usePathname();
+    const router = useRouter();
+
+    const handleLogout = () => {
+        // Clear cookie for all possible domains
+        document.cookie = "auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        const hostname = window.location.hostname;
+        if (!hostname.includes("localhost")) {
+            const domainParts = hostname.split('.');
+            if (domainParts.length >= 2) {
+                const rootDomain = domainParts.slice(-2).join('.');
+                document.cookie = `auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=.${rootDomain}`;
+            }
+        }
+        router.push("/login?target=platform");
+    };
 
     return (
         <div className="flex h-screen overflow-hidden bg-slate-50">
@@ -73,7 +89,16 @@ export function PlatformLayout({ children }: { children: React.ReactNode }) {
                 </nav>
 
                 {/* Sidebar Footer */}
-                <div className="p-4 border-t border-slate-800">
+                <div className="p-4 border-t border-slate-800 space-y-2">
+                    <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-500/10 transition-colors text-slate-400 hover:text-red-400 group"
+                        title="Log Out"
+                    >
+                        <LogOut className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                        {sidebarOpen && <span className="text-sm font-medium">Log Out</span>}
+                    </button>
+
                     <button
                         onClick={() => setSidebarOpen(!sidebarOpen)}
                         className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 transition-colors text-slate-400 hover:text-white"
@@ -118,9 +143,19 @@ export function PlatformLayout({ children }: { children: React.ReactNode }) {
                                 <p className="text-sm font-bold text-slate-800">Super Admin</p>
                                 <p className="text-[10px] text-indigo-600 font-bold uppercase">Platform</p>
                             </div>
-                            <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-500 shadow-sm overflow-hidden">
-                                <User className="w-6 h-6" />
+                            <div className="relative group">
+                                <button className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-500 shadow-sm overflow-hidden hover:bg-slate-200 transition-colors">
+                                    <User className="w-6 h-6" />
+                                </button>
+                                {/* Simple Dropdown on hover or click - for now keeping it simple as a logout button next to it or just adding it */}
                             </div>
+                            <button
+                                onClick={handleLogout}
+                                className="p-2 rounded-lg hover:bg-red-50 text-red-500 transition-colors"
+                                title="Log Out"
+                            >
+                                <LogOut className="w-5 h-5" />
+                            </button>
                         </div>
                     </div>
                 </header>
@@ -135,3 +170,4 @@ export function PlatformLayout({ children }: { children: React.ReactNode }) {
         </div>
     );
 }
+

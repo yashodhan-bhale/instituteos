@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 // Updated Nav Items based on typical dashboard needs
 const NAV_ITEMS = [
@@ -19,6 +19,21 @@ const NAV_ITEMS = [
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const pathname = usePathname();
+    const router = useRouter();
+
+    const handleLogout = () => {
+        // Clear cookie for all possible domains
+        document.cookie = "auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        const hostname = window.location.hostname;
+        if (!hostname.includes("localhost")) {
+            const domainParts = hostname.split('.');
+            if (domainParts.length >= 2) {
+                const rootDomain = domainParts.slice(-2).join('.');
+                document.cookie = `auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=.${rootDomain}`;
+            }
+        }
+        router.push("/login?target=institute");
+    };
 
     return (
         <div className="flex h-screen overflow-hidden bg-background">
@@ -67,6 +82,16 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                         );
                     })}
                 </nav>
+
+                <div className="p-4 border-t">
+                    <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 text-red-500 hover:bg-red-50 group"
+                    >
+                        <span className="text-lg group-hover:scale-110 transition-transform">🚪</span>
+                        {sidebarOpen && <span>Log Out</span>}
+                    </button>
+                </div>
             </aside>
 
             {/* Main Content */}
@@ -93,14 +118,23 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-2 bg-white rounded-full p-1 pl-4 pr-1 shadow-sm border border-border/50">
-                            <div className="text-right mr-2 hidden sm:block">
-                                <p className="text-sm font-semibold">Jone Copper</p>
-                                <p className="text-xs text-muted-foreground">Admin</p>
+                        <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-2 bg-white rounded-full p-1 pl-4 pr-1 shadow-sm border border-border/50">
+                                <div className="text-right mr-2 hidden sm:block">
+                                    <p className="text-sm font-semibold">Jone Copper</p>
+                                    <p className="text-xs text-muted-foreground">Admin</p>
+                                </div>
+                                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-sm font-bold shadow-inner">
+                                    JC
+                                </div>
                             </div>
-                            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-sm font-bold shadow-inner">
-                                JC
-                            </div>
+                            <button
+                                onClick={handleLogout}
+                                className="p-2 rounded-lg hover:bg-red-50 text-red-500 transition-colors"
+                                title="Log Out"
+                            >
+                                <span className="text-xl">🚪</span>
+                            </button>
                         </div>
                     </div>
                 </header>
@@ -111,3 +145,4 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         </div>
     );
 }
+
