@@ -3,10 +3,8 @@ import { AppModule } from "./app.module";
 import { ValidationPipe } from "@nestjs/common";
 
 async function bootstrap() {
-  console.log("Starting NestJS application bootstrap...");
   try {
     const app = await NestFactory.create(AppModule);
-    console.log("NestJS application created.");
 
     app.setGlobalPrefix("api/v1");
 
