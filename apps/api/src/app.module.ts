@@ -9,6 +9,7 @@ import { SignalModule } from "./modules/signal/signal.module";
 import { ImportModule } from "./modules/import/import.module";
 import { InstituteModule } from "./modules/institute/institute.module";
 import { StudentModule } from "./modules/student/student.module";
+import { SlcModule } from "./modules/slc/slc.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { AppController } from "./app.controller";
 
@@ -25,6 +26,7 @@ import { AppController } from "./app.controller";
     ImportModule,
     InstituteModule,
     StudentModule,
+    SlcModule,
   ],
   controllers: [AppController],
 })

@@ -1,10 +1,12 @@
 "use client";
 
+import { useState, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { DataTable } from "@/components/data-table/data-table";
 import { ColumnDef } from "@tanstack/react-table";
-import { Plus, Download, Filter, Search, MoreHorizontal } from "lucide-react";
+import { Plus, Download, MoreHorizontal, FileText } from "lucide-react";
 import Link from "next/link";
+import { SlcModal } from "./slc-modal";
 
 interface Student {
     id: string;
@@ -15,6 +17,58 @@ interface Student {
     birthDate: string | null;
     category: string | null;
     motherName: string | null;
+}
+
+function ActionsCell({ student }: { student: Student }) {
+    const [open, setOpen] = useState(false);
+    const [showSlcModal, setShowSlcModal] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setOpen(false);
+            }
+        }
+        if (open) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [open]);
+
+    return (
+        <>
+            <div className="relative" ref={menuRef}>
+                <button
+                    onClick={() => setOpen(!open)}
+                    className="p-2 hover:bg-muted rounded-full transition-colors"
+                >
+                    <MoreHorizontal className="h-4 w-4" />
+                </button>
+                {open && (
+                    <div className="absolute right-0 top-9 z-20 w-48 rounded-xl border bg-card p-1.5 shadow-lg animate-in fade-in slide-in-from-top-1 duration-150">
+                        <button
+                            onClick={() => {
+                                setOpen(false);
+                                setShowSlcModal(true);
+                            }}
+                            className="flex items-center gap-2 w-full px-3 py-2 text-sm font-medium rounded-lg hover:bg-muted transition-colors text-left"
+                        >
+                            <FileText className="h-4 w-4 text-primary" />
+                            Generate SLC
+                        </button>
+                    </div>
+                )}
+            </div>
+
+            {showSlcModal && (
+                <SlcModal
+                    studentId={student.id}
+                    onClose={() => setShowSlcModal(false)}
+                />
+            )}
+        </>
+    );
 }
 
 const columns: ColumnDef<Student>[] = [
@@ -53,11 +107,7 @@ const columns: ColumnDef<Student>[] = [
     },
     {
         id: "actions",
-        cell: ({ row }) => (
-            <button className="p-2 hover:bg-muted rounded-full">
-                <MoreHorizontal className="h-4 w-4" />
-            </button>
-        ),
+        cell: ({ row }) => <ActionsCell student={row.original} />,
     }
 ];
 
