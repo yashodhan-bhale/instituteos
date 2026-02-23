@@ -65,10 +65,11 @@ export default function StudentsPage() {
     const { data: students, isLoading, error } = useQuery<Student[]>({
         queryKey: ["students"],
         queryFn: async () => {
+            const token = document.cookie.split("; ").find(row => row.startsWith("auth_token="))?.split("=")[1];
             const res = await fetch("/api/v1/students", {
-                // In a real app, you'd pass auth tokens here
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 }
             });
             if (!res.ok) throw new Error("Failed to fetch students");

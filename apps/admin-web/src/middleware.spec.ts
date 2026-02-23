@@ -48,7 +48,7 @@ describe('Middleware', () => {
         expect(callUrl.pathname).toBe('/platform/dashboard');
     });
 
-    it('should rewrite requests on institute.localhost to /institute when authenticated', async () => {
+    it('should rewrite requests on institute.localhost to /school when authenticated', async () => {
         const { jwtVerify } = await import('jose');
         (jwtVerify as any).mockResolvedValue({ payload: { target: 'institute' } });
 
@@ -57,7 +57,7 @@ describe('Middleware', () => {
 
         expect(NextResponse.rewrite).toHaveBeenCalled();
         const callUrl = (NextResponse.rewrite as any).mock.calls[0][0];
-        expect(callUrl.pathname).toBe('/institute/staff');
+        expect(callUrl.pathname).toBe('/school/staff');
     });
 
     it('should rewrite root domain to /site', async () => {

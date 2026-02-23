@@ -20,9 +20,12 @@ export default function StudentImportPage() {
         formData.append("format", "format-1");
 
         try {
+            const token = document.cookie.split("; ").find(row => row.startsWith("auth_token="))?.split("=")[1];
             const res = await fetch("/api/v1/import/students", {
                 method: "POST",
-                // In a real app, the browser adds Multi-part boundary automatically
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
                 body: formData,
             });
 

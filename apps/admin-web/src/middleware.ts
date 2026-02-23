@@ -72,10 +72,10 @@ export async function middleware(request: NextRequest) {
         }
     }
 
-    // Institute Subdomain -> Rewrite to /institute
+    // Institute Subdomain -> Rewrite to /school
     else if (isSubdomain) {
-        if (!path.startsWith("/institute") && !path.startsWith("/api") && !path.startsWith("/_next") && !path.startsWith("/login")) {
-            return NextResponse.rewrite(new URL(`/institute${path === "/" ? "" : path}`, request.url));
+        if (!path.startsWith("/school") && !path.startsWith("/api") && !path.startsWith("/_next") && !path.startsWith("/login")) {
+            return NextResponse.rewrite(new URL(`/school${path === "/" ? "" : path}`, request.url));
         }
     }
 

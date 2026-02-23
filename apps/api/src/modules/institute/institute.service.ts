@@ -85,6 +85,17 @@ export class InstituteService {
     });
   }
 
+  async getInstituteById(id: string) {
+    return this.prisma.institute.findUnique({
+      where: { id },
+      include: {
+        _count: {
+          select: { users: true, students: true },
+        },
+      },
+    });
+  }
+
   async getAllInstitutes() {
     return this.prisma.institute.findMany({
       include: {

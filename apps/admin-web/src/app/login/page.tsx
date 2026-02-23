@@ -85,7 +85,7 @@ function LoginForm() {
                     router.push("/platform");
                 }
             } else {
-                router.push("/institute");
+                router.push("/");
             }
         } catch (err: any) {
             setError(err.message);

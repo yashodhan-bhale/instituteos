@@ -3,16 +3,16 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 
 // Updated Nav Items based on typical dashboard needs
 const NAV_ITEMS = [
     { label: "Dashboard", href: "/", icon: "📊" },
-    { label: "Institute", href: "/institute", icon: "🏫" },
-    { label: "Student", href: "/students", icon: "👨‍🎓" },
-    { label: "Teacher", href: "/staff", icon: "👩‍🏫" },
-    { label: "Parent", href: "/parents", icon: "👨‍👩‍👧‍👦" },
+    { label: "Students", href: "/students", icon: "👨‍🎓" },
+    { label: "Teachers", href: "/staff", icon: "👩‍🏫" },
+    { label: "Parents", href: "/parents", icon: "👨‍👩‍👧‍👦" },
     { label: "LMS", href: "/lms", icon: "📚" },
-    { label: "Fees Collection", href: "/finance", icon: "💰" },
+    { label: "Finance", href: "/finance", icon: "💰" },
     { label: "Attendance", href: "/attendance", icon: "✅" },
 ];
 
@@ -20,6 +20,29 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const pathname = usePathname();
     const router = useRouter();
+
+    const { data: institute } = useQuery({
+        queryKey: ["institute", "me"],
+        queryFn: async () => {
+            const token = document.cookie.split("; ").find(row => row.startsWith("auth_token="))?.split("=")[1];
+            const res = await fetch("/api/v1/institutes/me", {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (!res.ok) throw new Error("Failed to fetch institute");
+            return res.json();
+        },
+    });
+
+    const getInitials = (name: string) => {
+        return name
+            .split(" ")
+            .map((n) => n[0])
+            .join("")
+            .slice(0, 2)
+            .toUpperCase();
+    };
 
     const handleLogout = () => {
         // Clear cookie for all possible domains
@@ -45,13 +68,15 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 {/* Logo */}
                 <div className="flex items-center gap-3 px-6 py-5">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-teal-500/20">
-                        AK
+                        {institute ? getInitials(institute.name) : "AK"}
                     </div>
                     {sidebarOpen && (
                         <div className="overflow-hidden">
-                            <h1 className="text-xl font-bold tracking-tight text-foreground line-clamp-1">AK National</h1>
+                            <h1 className="text-xl font-bold tracking-tight text-foreground line-clamp-1">
+                                {institute ? institute.name : "Loading..."}
+                            </h1>
                             <p className="text-[10px] text-muted-foreground tracking-widest uppercase">
-                                High School
+                                {institute?.domain || "Institute"}
                             </p>
                         </div>
                     )}

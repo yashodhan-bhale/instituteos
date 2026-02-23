@@ -1,7 +1,47 @@
+"use client";
+
 import Link from "next/link";
 import { RoiDashboard } from "@/components/dashboard/roi-dashboard";
+import { useQuery } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 
 export default function DashboardPage() {
+    const { data: institute, isLoading: isInstituteLoading } = useQuery({
+        queryKey: ["institute", "me"],
+        queryFn: async () => {
+            const token = document.cookie.split("; ").find(row => row.startsWith("auth_token="))?.split("=")[1];
+            const res = await fetch("/api/v1/institutes/me", {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (!res.ok) throw new Error("Failed to fetch institute");
+            return res.json();
+        },
+    });
+
+    const { data: students, isLoading: isStudentsLoading } = useQuery({
+        queryKey: ["students", "recent"],
+        queryFn: async () => {
+            const token = document.cookie.split("; ").find(row => row.startsWith("auth_token="))?.split("=")[1];
+            const res = await fetch("/api/v1/students?limit=5", {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (!res.ok) throw new Error("Failed to fetch students");
+            return res.json();
+        },
+    });
+
+    if (isInstituteLoading) {
+        return (
+            <div className="h-full flex items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-8">
             {/* Header */}
@@ -10,7 +50,7 @@ export default function DashboardPage() {
                     Dashboard
                 </h1>
                 <p className="text-muted-foreground text-sm mt-1">
-                    A K National High School, Khamgaon &rarr; Manage your school, track attendance, expense, and net worth.
+                    {institute?.name || "My School"} &rarr; Manage your school, track attendance, expense, and net worth.
                 </p>
             </div>
 
@@ -18,9 +58,9 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
                 <StatCard
                     title="Total Student"
-                    value="597"
-                    change="100%"
-                    trend="+597 This Month"
+                    value={institute?._count?.students?.toString() || "0"}
+                    change="0%"
+                    trend="From all time"
                     changeType="positive"
                     icon="👨‍🎓" // In real app, use SVG icons like lucide-react
                     color="orange"
@@ -93,26 +133,30 @@ export default function DashboardPage() {
                         <Link href="/students" className="text-xs text-primary hover:underline">View All</Link>
                     </div>
                     <div className="space-y-4">
-                        {[
-                            { name: "Anjili Ramrao Deshmukh", grNo: "44458", date: "Today" },
-                            { name: "Dikshant Kailas Telang", grNo: "42306", date: "Today" },
-                            { name: "Prachi Mangesh Modkar", grNo: "42818", date: "Today" },
-                            { name: "Arushi Shankar Shinde", grNo: "41976", date: "Today" },
-                            { name: "Darshana Ashok Ugale", grNo: "41975", date: "Today" }
-                        ].map((student, i) => (
-                            <div key={i} className="flex gap-4 items-center p-2 rounded-lg hover:bg-muted/50 transition-colors">
-                                <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-500/20 flex items-center justify-center text-orange-600 dark:text-orange-400 text-sm font-bold">
-                                    {student.name.split(' ').map(n => n[0]).join('')}
-                                </div>
-                                <div className="flex-1">
-                                    <h4 className="text-sm font-bold">{student.name}</h4>
-                                    <p className="text-xs text-muted-foreground">
-                                        GR No: {student.grNo}
-                                    </p>
-                                </div>
-                                <div className="text-[10px] text-muted-foreground">{student.date}</div>
+                        {isStudentsLoading ? (
+                            <div className="flex justify-center p-8">
+                                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                             </div>
-                        ))}
+                        ) : students && students.length > 0 ? (
+                            students.slice(0, 5).map((student: any, i: number) => (
+                                <div key={student.id} className="flex gap-4 items-center p-2 rounded-lg hover:bg-muted/50 transition-colors">
+                                    <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-500/20 flex items-center justify-center text-orange-600 dark:text-orange-400 text-sm font-bold">
+                                        {student.studentName.split(' ').map((n: string) => n[0]).join('')}
+                                    </div>
+                                    <div className="flex-1">
+                                        <h4 className="text-sm font-bold">{student.studentName}</h4>
+                                        <p className="text-xs text-muted-foreground">
+                                            GR No: {student.grNo || "N/A"}
+                                        </p>
+                                    </div>
+                                    <div className="text-[10px] text-muted-foreground">
+                                        {new Date(student.createdAt).toLocaleDateString()}
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-center py-8 text-sm text-muted-foreground">No students found.</p>
+                        )}
                     </div>
                 </div>
 

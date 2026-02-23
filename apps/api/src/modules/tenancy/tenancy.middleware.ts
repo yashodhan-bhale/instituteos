@@ -36,8 +36,11 @@ export class TenancyMiddleware implements NestMiddleware {
   private async extractFromSubdomain(
     req: Request,
   ): Promise<string | undefined> {
-    const host = req.headers.host;
+    const host =
+      (req.headers["x-forwarded-host"] as string) || req.headers.host;
     if (!host) return undefined;
+
+    console.log(`[Tenancy] Extracting from host: ${host}`);
 
     // Pattern: <subdomain>.instituteos.app or <subdomain>.localhost:3000
     const parts = host.split(".");
@@ -46,6 +49,7 @@ export class TenancyMiddleware implements NestMiddleware {
     // lvh.me points to 127.0.0.1, so oxford.lvh.me works
     if (parts.length >= 2) {
       const subdomain = parts[0].toLowerCase();
+      console.log(`[Tenancy] Subdomain extracted: ${subdomain}`);
 
       // Special case for platform management
       if (subdomain === "platform") {
@@ -58,9 +62,16 @@ export class TenancyMiddleware implements NestMiddleware {
         select: { id: true },
       });
 
+      if (institute) {
+        console.log(`[Tenancy] Found institute ID: ${institute.id}`);
+      } else {
+        console.log(`[Tenancy] No institute found for domain: ${subdomain}`);
+      }
+
       return institute?.id;
     }
 
+    console.log(`[Tenancy] Host parts too short or invalid: ${host}`);
     return undefined;
   }
 }

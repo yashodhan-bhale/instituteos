@@ -47,6 +47,15 @@ export class InstituteController {
     });
   }
 
+  @Get("me")
+  @UseGuards(JwtAuthGuard)
+  async findMe(@Req() req: any) {
+    if (!req.instituteId || req.instituteId === "PLATFORM") {
+      throw new UnauthorizedException("No institute context found");
+    }
+    return this.instituteService.getInstituteById(req.instituteId);
+  }
+
   @Get()
   @UseGuards(JwtAuthGuard)
   async findAll(@Req() req: any) {
